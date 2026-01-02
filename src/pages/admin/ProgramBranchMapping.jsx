@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
 import { Card, Row, Col, List, Checkbox, Button, Tag, Typography, Empty, Spin } from 'antd';
 import { SaveOutlined, LinkOutlined } from '@ant-design/icons';
 import PageHeader from '@/components/common/PageHeader';
-import { programs, branches, programBranchMappings } from '@/services/mockData';
+import { programsService, branchesService, programBranchMapService } from '@/services/adminMockService';
 import useAppStore from '@/store/useAppStore';
 import './CrudPage.css';
 
@@ -16,24 +16,48 @@ const { Text } = Typography;
 const ProgramBranchMapping = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [programs, setPrograms] = useState([]);
+  const [branches, setBranches] = useState([]);
   const [selectedProgram, setSelectedProgram] = useState(null);
   const [mappings, setMappings] = useState({});
   const { showSuccess, showError } = useAppStore();
 
   useEffect(() => {
-    // Initialize mappings from mock data
-    const initialMappings = {};
-    programs.forEach(program => {
-      initialMappings[program.id] = programBranchMappings
-        .filter(m => m.programId === program.id)
-        .map(m => m.branchId);
-    });
-    setMappings(initialMappings);
-    setLoading(false);
-    
-    if (programs.length > 0) {
-      setSelectedProgram(programs[0].id);
-    }
+    const fetchData = async () => {
+      try {
+        const [programsRes, branchesRes, mappingsRes] = await Promise.all([
+          programsService.getAll(),
+          branchesService.getAll(),
+          programBranchMapService.getAll()
+        ]);
+
+        const programsData = programsRes.data;
+        const branchesData = branchesRes.data;
+        const mappingsData = mappingsRes.data;
+
+        setPrograms(programsData);
+        setBranches(branchesData);
+
+        // Initialize mappings from service data
+        const initialMappings = {};
+        programsData.forEach(program => {
+          initialMappings[program.id] = mappingsData
+            .filter(m => m.programId === program.id)
+            .map(m => m.branchId);
+        });
+        setMappings(initialMappings);
+        
+        if (programsData.length > 0) {
+          setSelectedProgram(programsData[0].id);
+        }
+      } catch (error) {
+        showError('Failed to fetch data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
   const handleProgramSelect = (programId) => {

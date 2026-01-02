@@ -216,12 +216,34 @@ export const createMockCrud = (initialData) => {
     },
     
     create: (newItem) => {
+      // Validation: Check for duplicates
+      const exists = data.some(d => 
+        (d.name && d.name.toLowerCase() === newItem.name?.toLowerCase()) || 
+        (d.code && d.code.toLowerCase() === newItem.code?.toLowerCase())
+      );
+      
+      if (exists) {
+        return Promise.reject({ message: 'Duplicate entry: Name or Code already exists' });
+      }
+
       const item = { ...newItem, id: data.length + 1 };
       data.push(item);
       return Promise.resolve({ success: true, data: item, message: 'Created successfully' });
     },
     
     update: (id, updates) => {
+      // Validation: Check for duplicates (excluding current item)
+      const exists = data.some(d => 
+        d.id !== id && (
+          (updates.name && d.name?.toLowerCase() === updates.name?.toLowerCase()) || 
+          (updates.code && d.code?.toLowerCase() === updates.code?.toLowerCase())
+        )
+      );
+
+      if (exists) {
+        return Promise.reject({ message: 'Duplicate entry: Name or Code already exists' });
+      }
+
       const index = data.findIndex(d => d.id === id);
       if (index !== -1) {
         data[index] = { ...data[index], ...updates };

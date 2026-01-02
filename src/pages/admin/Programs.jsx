@@ -8,12 +8,12 @@ import { Form, Input, Select, InputNumber, Tag, Switch, Card } from 'antd';
 import PageHeader from '@/components/common/PageHeader';
 import DataTable from '@/components/common/DataTable';
 import FormModal from '@/components/common/FormModal';
-import { programs as mockPrograms, createMockCrud } from '@/services/mockData';
+import { programsService } from '@/services/adminMockService';
 import { PROGRAM_TYPES, STATUS_OPTIONS } from '@/utils/constants';
 import useAppStore from '@/store/useAppStore';
 import './CrudPage.css';
 
-const programsService = createMockCrud(mockPrograms);
+// const programsService = createMockCrud(mockPrograms); // Removed local instance
 
 const Programs = () => {
   const [data, setData] = useState([]);

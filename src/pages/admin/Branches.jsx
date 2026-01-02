@@ -8,15 +8,16 @@ import { Form, Input, Select, Tag, Switch, Card } from 'antd';
 import PageHeader from '@/components/common/PageHeader';
 import DataTable from '@/components/common/DataTable';
 import FormModal from '@/components/common/FormModal';
-import { branches as mockBranches, programs, createMockCrud } from '@/services/mockData';
+import { branchesService, programsService } from '@/services/adminMockService';
 import { STATUS_OPTIONS } from '@/utils/constants';
 import useAppStore from '@/store/useAppStore';
 import './CrudPage.css';
 
-const branchesService = createMockCrud(mockBranches);
+// const branchesService = createMockCrud(mockBranches); // Removed local instance
 
 const Branches = () => {
   const [data, setData] = useState([]);
+  const [programsList, setProgramsList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
@@ -26,10 +27,14 @@ const Branches = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await branchesService.getAll();
-      setData(response.data);
+      const [branchesRes, programsRes] = await Promise.all([
+        branchesService.getAll(),
+        programsService.getAll()
+      ]);
+      setData(branchesRes.data);
+      setProgramsList(programsRes.data);
     } catch {
-      showError('Failed to fetch branches');
+      showError('Failed to fetch data');
     } finally {
       setLoading(false);
     }
@@ -39,7 +44,7 @@ const Branches = () => {
     fetchData();
   }, []);
 
-  const programOptions = programs.map(p => ({ value: p.id, label: `${p.name} (${p.code})` }));
+  const programOptions = programsList.map(p => ({ value: p.id, label: `${p.name} (${p.code})` }));
 
   const columns = useMemo(() => [
     {
@@ -61,10 +66,10 @@ const Branches = () => {
       key: 'programId',
       width: 200,
       render: (programId) => {
-        const program = programs.find(p => p.id === programId);
+        const program = programsList.find(p => p.id === programId);
         return program ? program.code : '-';
       },
-      filters: programs.map(p => ({ text: p.code, value: p.id })),
+      filters: programsList.map(p => ({ text: p.code, value: p.id })),
       onFilter: (value, record) => record.programId === value,
     },
     {
