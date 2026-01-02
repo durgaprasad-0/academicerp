@@ -1,0 +1,112 @@
+/* Dashboard Shared Styles */
+
+.dashboard-page {
+  /* Container styles handled by page-container */
+}
+
+.dashboard-card {
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  height: 100%;
+}
+
+.dashboard-card .ant-card-head {
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.dashboard-card .ant-card-head-title {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+/* Quick Action Buttons */
+.quick-action-btn {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.quick-action-btn:hover {
+  background: var(--color-bg-primary);
+  border-color: var(--color-secondary);
+  color: var(--color-primary);
+}
+
+/* List Items */
+.list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.list-item:last-child {
+  border-bottom: none;
+}
+
+.list-item-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* Faculty Dashboard Specific */
+.course-progress-card {
+  border-radius: 12px;
+}
+
+.course-progress-item {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.course-progress-item:last-child {
+  border-bottom: none;
+}
+
+.course-progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+/* Overview Cards Row */
+.overview-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.overview-card {
+  background: var(--color-bg-primary);
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+}
+
+.overview-card-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.overview-card-label {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-top: 4px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .dashboard-card {
+    margin-bottom: 16px;
+  }
+}

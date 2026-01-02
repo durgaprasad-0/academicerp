@@ -1,0 +1,108 @@
+/* FormModal Styles */
+
+.form-modal .ant-modal-header {
+  border-bottom: 1px solid var(--color-border-light);
+  padding: 20px 24px;
+  margin-bottom: 0;
+}
+
+.form-modal .ant-modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.form-modal .ant-modal-body {
+  padding: 24px;
+  max-height: calc(100vh - 260px);
+  overflow-y: auto;
+}
+
+.form-modal .ant-modal-footer {
+  border-top: 1px solid var(--color-border-light);
+  padding: 16px 24px;
+  margin-top: 0;
+}
+
+.form-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.form-modal-content .ant-form-item {
+  margin-bottom: 20px;
+}
+
+.form-modal-content .ant-form-item:last-child {
+  margin-bottom: 0;
+}
+
+.form-modal-content .ant-form-item-label > label {
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.form-modal-content .ant-form-item-label > label.ant-form-item-required::before {
+  display: none;
+}
+
+.form-modal-content .ant-form-item-label > label.ant-form-item-required::after {
+  content: '*';
+  color: #EF4444;
+  margin-left: 4px;
+}
+
+/* Input Styling */
+.form-modal-content .ant-input,
+.form-modal-content .ant-select-selector,
+.form-modal-content .ant-picker,
+.form-modal-content .ant-input-number {
+  border-radius: 8px;
+}
+
+.form-modal-content .ant-input:focus,
+.form-modal-content .ant-input-focused,
+.form-modal-content .ant-select-focused .ant-select-selector,
+.form-modal-content .ant-picker-focused {
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 2px rgba(78, 115, 223, 0.1);
+}
+
+/* Textarea */
+.form-modal-content .ant-input-textarea textarea {
+  border-radius: 8px;
+}
+
+/* Error State */
+.form-modal-content .ant-form-item-has-error .ant-input,
+.form-modal-content .ant-form-item-has-error .ant-select-selector {
+  border-color: #EF4444;
+}
+
+.form-modal-content .ant-form-item-explain-error {
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* Loading States */
+.form-modal.ant-modal-wrap .ant-modal-content {
+  transition: opacity 0.2s ease;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+  .form-modal .ant-modal {
+    max-width: calc(100vw - 32px);
+    margin: 16px;
+  }
+  
+  .form-modal .ant-modal-body {
+    padding: 16px;
+    max-height: calc(100vh - 200px);
+  }
+  
+  .form-modal .ant-modal-header,
+  .form-modal .ant-modal-footer {
+    padding: 16px;
+  }
+}

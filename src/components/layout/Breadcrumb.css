@@ -1,0 +1,31 @@
+/* Breadcrumb Styles */
+
+.breadcrumb-container {
+  margin-bottom: 16px;
+}
+
+.breadcrumb-container .ant-breadcrumb {
+  font-size: 14px;
+}
+
+.breadcrumb-container .ant-breadcrumb a {
+  color: var(--color-text-secondary);
+  transition: color 0.2s ease;
+}
+
+.breadcrumb-container .ant-breadcrumb a:hover {
+  color: var(--color-primary);
+}
+
+.breadcrumb-item {
+  color: var(--color-text-secondary);
+}
+
+.breadcrumb-current {
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+.breadcrumb-container .ant-breadcrumb-separator {
+  color: var(--color-text-tertiary);
+}

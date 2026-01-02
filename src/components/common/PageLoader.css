@@ -1,0 +1,61 @@
+/* PageLoader Styles */
+
+.page-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg-primary);
+  padding: 48px;
+}
+
+.page-loader.fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+}
+
+.loader-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.loader-logo {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.loader-logo .logo-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(31, 60, 136, 0.2);
+}
+
+.loader-tip {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+}
+
+/* Spin Color Override */
+.page-loader .ant-spin-dot-item {
+  background-color: var(--color-primary);
+}

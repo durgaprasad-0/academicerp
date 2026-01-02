@@ -1,0 +1,115 @@
+/* SkeletonLoader Styles */
+
+/* Table Skeleton */
+.skeleton-table {
+  padding: 0;
+}
+
+.skeleton-table-header {
+  background: var(--color-bg-tertiary);
+  padding: 12px 16px;
+  border-radius: 8px 8px 0 0;
+  margin-bottom: 1px;
+}
+
+.skeleton-table-row {
+  display: flex;
+  gap: 16px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.skeleton-table-row:last-child {
+  border-bottom: none;
+}
+
+.skeleton-table-cell {
+  flex: 1;
+}
+
+/* Card Skeleton */
+.skeleton-card {
+  border-radius: 12px;
+}
+
+/* Stats Card Skeleton */
+.skeleton-stats-card {
+  border-radius: 12px;
+}
+
+.skeleton-stats-content {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.skeleton-stats-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Form Skeleton */
+.skeleton-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.skeleton-form-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.skeleton-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border-light);
+}
+
+/* List Skeleton */
+.skeleton-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.skeleton-list-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.skeleton-list-item:last-child {
+  border-bottom: none;
+}
+
+.skeleton-list-content {
+  flex: 1;
+}
+
+/* Page Skeleton */
+.skeleton-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+/* Animation Override for Consistency */
+.ant-skeleton-content .ant-skeleton-title,
+.ant-skeleton-content .ant-skeleton-paragraph > li {
+  border-radius: 6px;
+}
+
+.ant-skeleton-input {
+  border-radius: 6px;
+}
+
+.ant-skeleton-button {
+  border-radius: 8px;
+}

@@ -1,0 +1,493 @@
+/**
+ * Question Paper Generator Page
+ * Auto-generate question papers with rule enforcement
+ */
+
+import { useState, useMemo } from 'react';
+import { 
+  Card, Form, Select, InputNumber, Button, Steps, Row, Col, 
+  Typography, Divider, Tag, Table, Space, Slider, Alert, Result, Spin
+} from 'antd';
+import { 
+  FileTextOutlined, SettingOutlined, CheckCircleOutlined, 
+  PrinterOutlined, DownloadOutlined, ReloadOutlined,
+  BookOutlined, QuestionCircleOutlined
+} from '@ant-design/icons';
+import PageHeader from '@/components/common/PageHeader';
+import { 
+  courses, branches, regulations, units, bloomLevels, 
+  difficultyLevels, questions 
+} from '@/services/mockData';
+import { SEMESTERS, ACADEMIC_YEARS } from '@/utils/constants';
+import { colors } from '@/theme/themeConfig';
+import useAppStore from '@/store/useAppStore';
+import '@/pages/admin/CrudPage.css';
+import './QuestionPaper.css';
+
+const { Title, Text, Paragraph } = Typography;
+
+const QuestionPaperGenerator = () => {
+  const [currentStep, setCurrentStep] = useState(0);
+  const [form] = Form.useForm();
+  const [generating, setGenerating] = useState(false);
+  const [generatedPaper, setGeneratedPaper] = useState(null);
+  const { showSuccess, showError } = useAppStore();
+
+  // Configuration state
+  const [config, setConfig] = useState({
+    courseId: null,
+    branchId: null,
+    regulationId: null,
+    semester: null,
+    academicYear: null,
+    examType: 'mid',
+    totalMarks: 50,
+    duration: 90,
+    unitDistribution: {},
+    bloomDistribution: {},
+    difficultyDistribution: {},
+  });
+
+  const selectedCourse = courses.find(c => c.id === config.courseId);
+  const courseUnits = units.filter(u => u.courseId === config.courseId);
+  const availableQuestions = questions.filter(q => q.courseId === config.courseId);
+
+  const steps = [
+    { title: 'Course Selection', icon: <BookOutlined /> },
+    { title: 'Configuration', icon: <SettingOutlined /> },
+    { title: 'Generated Paper', icon: <FileTextOutlined /> },
+  ];
+
+  const handleCourseSelection = async () => {
+    try {
+      const values = await form.validateFields(['courseId', 'branchId', 'regulationId', 'semester', 'academicYear', 'examType']);
+      setConfig(prev => ({ ...prev, ...values }));
+      
+      // Initialize distributions
+      const unitDist = {};
+      courseUnits.forEach(u => { unitDist[u.id] = Math.floor(100 / courseUnits.length); });
+      
+      const bloomDist = {};
+      bloomLevels.forEach(b => { bloomDist[b.id] = Math.floor(100 / bloomLevels.length); });
+      
+      const diffDist = {};
+      difficultyLevels.forEach(d => { diffDist[d.id] = d.name.toLowerCase() === 'easy' ? 30 : d.name.toLowerCase() === 'medium' ? 50 : 20; });
+      
+      setConfig(prev => ({ 
+        ...prev, 
+        unitDistribution: unitDist,
+        bloomDistribution: bloomDist,
+        difficultyDistribution: diffDist,
+      }));
+      
+      setCurrentStep(1);
+    } catch {
+      // Validation error
+    }
+  };
+
+  const handleGenerate = async () => {
+    try {
+      await form.validateFields(['totalMarks', 'duration']);
+      setGenerating(true);
+
+      // Simulate generation
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      // Mock generated paper
+      const selectedQuestions = availableQuestions.slice(0, 10).map(q => ({
+        ...q,
+        unit: units.find(u => u.id === q.unitId),
+        bloom: bloomLevels.find(b => b.id === q.bloomLevelId),
+        difficulty: difficultyLevels.find(d => d.id === q.difficultyLevelId),
+      }));
+
+      setGeneratedPaper({
+        id: Date.now(),
+        course: selectedCourse,
+        config: config,
+        questions: selectedQuestions,
+        totalMarks: config.totalMarks,
+        generatedAt: new Date().toISOString(),
+      });
+
+      setCurrentStep(2);
+      showSuccess('Question paper generated successfully!');
+    } catch {
+      showError('Failed to generate paper');
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  const handleReset = () => {
+    setCurrentStep(0);
+    setGeneratedPaper(null);
+    form.resetFields();
+    setConfig({
+      courseId: null,
+      branchId: null,
+      regulationId: null,
+      semester: null,
+      academicYear: null,
+      examType: 'mid',
+      totalMarks: 50,
+      duration: 90,
+      unitDistribution: {},
+      bloomDistribution: {},
+      difficultyDistribution: {},
+    });
+  };
+
+  const questionColumns = [
+    {
+      title: '#',
+      key: 'index',
+      width: 50,
+      render: (_, __, index) => index + 1,
+    },
+    {
+      title: 'Question',
+      dataIndex: 'questionText',
+      key: 'questionText',
+      ellipsis: true,
+    },
+    {
+      title: 'Unit',
+      dataIndex: 'unit',
+      key: 'unit',
+      width: 80,
+      render: (unit) => unit ? `U${unit.unitNumber}` : '-',
+    },
+    {
+      title: 'Bloom',
+      dataIndex: 'bloom',
+      key: 'bloom',
+      width: 90,
+      render: (bloom) => bloom ? <Tag color="purple">L{bloom.level}</Tag> : '-',
+    },
+    {
+      title: 'Difficulty',
+      dataIndex: 'difficulty',
+      key: 'difficulty',
+      width: 90,
+      render: (diff) => {
+        const colors = { easy: 'green', medium: 'orange', hard: 'red' };
+        return diff ? <Tag color={colors[diff.name.toLowerCase()]}>{diff.name}</Tag> : '-';
+      },
+    },
+    {
+      title: 'Marks',
+      dataIndex: 'marks',
+      key: 'marks',
+      width: 70,
+      align: 'center',
+    },
+  ];
+
+  const renderStep = () => {
+    switch (currentStep) {
+      case 0:
+        return (
+          <Card className="generator-card">
+            <Title level={4}>Select Course & Exam Details</Title>
+            <Paragraph type="secondary">
+              Choose the course and exam parameters for which you want to generate the question paper.
+            </Paragraph>
+            <Divider />
+            
+            <Form form={form} layout="vertical">
+              <Row gutter={24}>
+                <Col xs={24} md={12}>
+                  <Form.Item
+                    name="courseId"
+                    label="Course"
+                    rules={[{ required: true, message: 'Please select a course' }]}
+                  >
+                    <Select
+                      placeholder="Select course"
+                      size="large"
+                      options={courses.slice(0, 5).map(c => ({ 
+                        value: c.id, 
+                        label: `${c.code} - ${c.name}` 
+                      }))}
+                      onChange={(v) => setConfig(prev => ({ ...prev, courseId: v }))}
+                    />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} md={12}>
+                  <Form.Item
+                    name="branchId"
+                    label="Branch"
+                    rules={[{ required: true, message: 'Please select a branch' }]}
+                  >
+                    <Select
+                      placeholder="Select branch"
+                      size="large"
+                      options={branches.map(b => ({ value: b.id, label: `${b.code} - ${b.name}` }))}
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+
+              <Row gutter={24}>
+                <Col xs={24} md={8}>
+                  <Form.Item
+                    name="regulationId"
+                    label="Regulation"
+                    rules={[{ required: true, message: 'Required' }]}
+                  >
+                    <Select
+                      placeholder="Select regulation"
+                      options={regulations.filter(r => r.status === 'active').map(r => ({ value: r.id, label: r.name }))}
+                    />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} md={8}>
+                  <Form.Item
+                    name="semester"
+                    label="Semester"
+                    rules={[{ required: true, message: 'Required' }]}
+                  >
+                    <Select placeholder="Select semester" options={SEMESTERS} />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} md={8}>
+                  <Form.Item
+                    name="academicYear"
+                    label="Academic Year"
+                    rules={[{ required: true, message: 'Required' }]}
+                  >
+                    <Select placeholder="Select year" options={ACADEMIC_YEARS} />
+                  </Form.Item>
+                </Col>
+              </Row>
+
+              <Form.Item
+                name="examType"
+                label="Exam Type"
+                initialValue="mid"
+                rules={[{ required: true }]}
+              >
+                <Select
+                  placeholder="Select exam type"
+                  options={[
+                    { value: 'mid', label: 'Mid Semester Exam' },
+                    { value: 'end', label: 'End Semester Exam' },
+                    { value: 'assignment', label: 'Assignment' },
+                    { value: 'quiz', label: 'Quiz' },
+                  ]}
+                />
+              </Form.Item>
+
+              <Divider />
+
+              <div style={{ textAlign: 'right' }}>
+                <Button type="primary" size="large" onClick={handleCourseSelection}>
+                  Next: Configure Paper
+                </Button>
+              </div>
+            </Form>
+          </Card>
+        );
+
+      case 1:
+        return (
+          <Card className="generator-card">
+            <Title level={4}>Configure Question Paper</Title>
+            <Paragraph type="secondary">
+              Set marks, duration, and distribution rules for generating the paper.
+            </Paragraph>
+            
+            <Alert
+              message={`Available Questions: ${availableQuestions.length}`}
+              description={`Found ${availableQuestions.length} questions for ${selectedCourse?.name || 'selected course'}`}
+              type="info"
+              showIcon
+              style={{ marginBottom: 24 }}
+            />
+            
+            <Form form={form} layout="vertical">
+              <Row gutter={24}>
+                <Col xs={24} md={8}>
+                  <Form.Item
+                    name="totalMarks"
+                    label="Total Marks"
+                    initialValue={50}
+                    rules={[{ required: true }]}
+                  >
+                    <InputNumber 
+                      min={10} 
+                      max={100} 
+                      style={{ width: '100%' }} 
+                      size="large"
+                      onChange={(v) => setConfig(prev => ({ ...prev, totalMarks: v }))}
+                    />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} md={8}>
+                  <Form.Item
+                    name="duration"
+                    label="Duration (minutes)"
+                    initialValue={90}
+                    rules={[{ required: true }]}
+                  >
+                    <InputNumber 
+                      min={30} 
+                      max={180} 
+                      style={{ width: '100%' }} 
+                      size="large"
+                      onChange={(v) => setConfig(prev => ({ ...prev, duration: v }))}
+                    />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} md={8}>
+                  <Form.Item label="Estimated Questions">
+                    <InputNumber 
+                      value={Math.ceil(config.totalMarks / 5)} 
+                      disabled 
+                      style={{ width: '100%' }} 
+                      size="large"
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+
+              <Divider>Difficulty Distribution</Divider>
+              
+              <Row gutter={16}>
+                {difficultyLevels.map(d => (
+                  <Col key={d.id} xs={24} md={8}>
+                    <div style={{ marginBottom: 16 }}>
+                      <Text strong>{d.name}</Text>
+                      <Slider
+                        value={config.difficultyDistribution[d.id] || 33}
+                        onChange={(v) => setConfig(prev => ({
+                          ...prev,
+                          difficultyDistribution: { ...prev.difficultyDistribution, [d.id]: v }
+                        }))}
+                        marks={{ 0: '0%', 50: '50%', 100: '100%' }}
+                      />
+                    </div>
+                  </Col>
+                ))}
+              </Row>
+
+              <Divider />
+
+              <Space style={{ width: '100%', justifyContent: 'space-between' }}>
+                <Button size="large" onClick={() => setCurrentStep(0)}>
+                  Back
+                </Button>
+                <Button 
+                  type="primary" 
+                  size="large" 
+                  icon={<FileTextOutlined />}
+                  onClick={handleGenerate}
+                  loading={generating}
+                >
+                  {generating ? 'Generating...' : 'Generate Paper'}
+                </Button>
+              </Space>
+            </Form>
+          </Card>
+        );
+
+      case 2:
+        return (
+          <div>
+            <Result
+              status="success"
+              title="Question Paper Generated!"
+              subTitle={`Paper generated for ${selectedCourse?.name} with ${generatedPaper?.questions.length} questions totaling ${config.totalMarks} marks.`}
+              extra={[
+                <Button 
+                  key="download"
+                  type="primary" 
+                  icon={<DownloadOutlined />} 
+                  size="large"
+                  onClick={() => showSuccess('PDF download started')}
+                >
+                  Download PDF
+                </Button>,
+                <Button 
+                  key="print"
+                  icon={<PrinterOutlined />} 
+                  size="large"
+                  onClick={() => window.print()}
+                >
+                  Print
+                </Button>,
+                <Button 
+                  key="new"
+                  icon={<ReloadOutlined />}
+                  onClick={handleReset}
+                  size="large"
+                >
+                  Generate New
+                </Button>,
+              ]}
+            />
+
+            <Card title="Generated Questions" style={{ marginTop: 24 }}>
+              <Table
+                dataSource={generatedPaper?.questions || []}
+                columns={questionColumns}
+                rowKey="id"
+                pagination={false}
+                size="middle"
+                summary={() => (
+                  <Table.Summary.Row>
+                    <Table.Summary.Cell index={0} colSpan={5}>
+                      <Text strong>Total</Text>
+                    </Table.Summary.Cell>
+                    <Table.Summary.Cell index={1}>
+                      <Text strong>{generatedPaper?.questions.reduce((sum, q) => sum + q.marks, 0)} marks</Text>
+                    </Table.Summary.Cell>
+                  </Table.Summary.Row>
+                )}
+              />
+            </Card>
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className="crud-page question-paper-page">
+      <PageHeader
+        title="Question Paper Generator"
+        subtitle="Auto-generate question papers with rule-based selection"
+        showAdd={false}
+        showRefresh={false}
+      />
+
+      <Card className="steps-card">
+        <Steps
+          current={currentStep}
+          items={steps.map((step, index) => ({
+            title: step.title,
+            icon: currentStep > index ? <CheckCircleOutlined /> : step.icon,
+          }))}
+        />
+      </Card>
+
+      <div style={{ marginTop: 24 }}>
+        {generating ? (
+          <Card style={{ textAlign: 'center', padding: 48 }}>
+            <Spin size="large" />
+            <Title level={4} style={{ marginTop: 24 }}>Generating Question Paper...</Title>
+            <Text type="secondary">Selecting questions based on your configuration</Text>
+          </Card>
+        ) : (
+          renderStep()
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default QuestionPaperGenerator;

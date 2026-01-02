@@ -1,0 +1,165 @@
+/* Question Paper Page Styles */
+
+.question-paper-page {
+  /* Container */
+}
+
+.steps-card {
+  border-radius: 12px;
+  margin-bottom: 0;
+}
+
+.steps-card .ant-steps {
+  padding: 12px 0;
+}
+
+.generator-card {
+  border-radius: 12px;
+}
+
+.generator-card .ant-card-body {
+  padding: 32px;
+}
+
+/* Distribution Sliders */
+.distribution-section {
+  background: var(--color-bg-primary);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.distribution-item {
+  margin-bottom: 20px;
+}
+
+.distribution-item:last-child {
+  margin-bottom: 0;
+}
+
+.distribution-label {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+/* Generated Paper Preview */
+.paper-preview {
+  background: #fff;
+  border-radius: 12px;
+  padding: 32px;
+  box-shadow: var(--shadow-lg);
+}
+
+.paper-header {
+  text-align: center;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 2px solid var(--color-primary);
+}
+
+.paper-header h2 {
+  margin: 0 0 8px 0;
+  color: var(--color-primary);
+}
+
+.paper-meta {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.paper-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+/* Question List in Paper */
+.paper-questions {
+  margin-top: 24px;
+}
+
+.paper-question {
+  padding: 16px 0;
+  border-bottom: 1px dashed var(--color-border-light);
+}
+
+.paper-question:last-child {
+  border-bottom: none;
+}
+
+.question-number {
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-right: 8px;
+}
+
+.question-marks {
+  float: right;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+/* Stats Cards in History */
+.paper-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.paper-stat {
+  text-align: center;
+  padding: 12px;
+  background: var(--color-bg-primary);
+  border-radius: 8px;
+}
+
+.paper-stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.paper-stat-label {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin-top: 4px;
+}
+
+/* Result Page */
+.question-paper-page .ant-result {
+  padding: 32px;
+  background: #fff;
+  border-radius: 12px;
+}
+
+/* Print Styles */
+@media print {
+  .page-header,
+  .steps-card,
+  .ant-result-extra {
+    display: none !important;
+  }
+  
+  .paper-preview {
+    box-shadow: none;
+    border: none;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .generator-card .ant-card-body {
+    padding: 16px;
+  }
+  
+  .paper-meta {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
