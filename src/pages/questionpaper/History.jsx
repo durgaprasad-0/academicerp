@@ -6,13 +6,14 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Card, Table, Tag, Button, Space, Modal, Typography, Descriptions, List, Row, Col } from 'antd';
 import { 
-  EyeOutlined, DownloadOutlined, PrinterOutlined, DeleteOutlined,
+  EyeOutlined, DownloadOutlined, DeleteOutlined,
   FileTextOutlined, CalendarOutlined, ClockCircleOutlined
 } from '@ant-design/icons';
 import PageHeader from '@/components/common/PageHeader';
 import { courses, branches, regulations } from '@/services/mockData';
 import { deletePaper } from '@/services/questionPaperService';
 import useQuestionPaperStore from '@/store/useQuestionPaperStore';
+import { downloadQuestionPaperPdf } from '@/utils/pdfGenerator';
 import { formatDateTime } from '@/utils/helpers';
 import useAppStore from '@/store/useAppStore';
 import '@/pages/admin/CrudPage.css';
@@ -36,6 +37,11 @@ const PaperHistory = () => {
     setData(papers);
     setLoading(false);
   }, [papers]);
+
+  const handleView = (record) => {
+    setSelectedPaper(record);
+    setViewModalOpen(true);
+  };
 
   const columns = useMemo(() => [
     {
@@ -138,12 +144,7 @@ const PaperHistory = () => {
             onClick={() => handleDownload(record)}
             title="Download"
           />
-          <Button 
-            type="text" 
-            icon={<PrinterOutlined />} 
-            onClick={() => handlePrint(record)}
-            title="Print"
-          />
+
           <Button 
             type="text" 
             danger 
@@ -156,19 +157,17 @@ const PaperHistory = () => {
     },
   ], []);
 
-  const handleView = (record) => {
-    setSelectedPaper(record);
-    setViewModalOpen(true);
-  };
-
   const handleDownload = (record) => {
-    showSuccess('PDF download started');
+    try {
+      downloadQuestionPaperPdf(record);
+      showSuccess('PDF Downloaded successfully');
+    } catch (error) {
+      console.error(error);
+      showError('Failed to download PDF');
+    }
   };
 
-  const handlePrint = (record) => {
-    showSuccess('Opening print dialog...');
-    window.print();
-  };
+
 
   const handleDelete = (record) => {
     Modal.confirm({

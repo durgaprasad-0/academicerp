@@ -4,10 +4,11 @@
  */
 
 import { useState, useEffect, useMemo } from 'react';
-import { Form, Input, Select, InputNumber, Tag, Switch, Card, Row, Col } from 'antd';
+import { Form, Input, Select, InputNumber, Tag, Switch, Card, Row, Col, Tabs } from 'antd';
 import PageHeader from '@/components/common/PageHeader';
 import DataTable from '@/components/common/DataTable';
 import FormModal from '@/components/common/FormModal';
+import BulkUpload from '@/components/common/BulkUpload';
 import { courses as mockCourses, createMockCrud } from '@/services/mockData';
 import { COURSE_TYPES, STATUS_OPTIONS } from '@/utils/constants';
 import useAppStore from '@/store/useAppStore';

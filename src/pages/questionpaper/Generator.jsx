@@ -6,7 +6,7 @@
 import { useState, useMemo } from 'react';
 import { 
   Card, Form, Select, InputNumber, Button, Steps, Row, Col, 
-  Typography, Divider, Tag, Table, Space, Slider, Alert, Result, Spin
+  Typography, Divider, Tag, Table, Space, Slider, Alert, Result, Spin, Checkbox
 } from 'antd';
 import { 
   FileTextOutlined, SettingOutlined, CheckCircleOutlined, 
@@ -21,6 +21,7 @@ import {
 import { SEMESTERS, ACADEMIC_YEARS } from '@/utils/constants';
 import { colors } from '@/theme/themeConfig';
 import useAppStore from '@/store/useAppStore';
+import { downloadQuestionPaperPdf } from '@/utils/pdfGenerator';
 import { generatePaper, savePaper } from '@/services/questionPaperService';
 import '@/pages/admin/CrudPage.css';
 import './QuestionPaper.css';
@@ -47,6 +48,7 @@ const QuestionPaperGenerator = () => {
     unitDistribution: {},
     bloomDistribution: {},
     difficultyDistribution: {},
+    selectedUnitIds: [],
   });
 
   const selectedCourse = courses.find(c => c.id === config.courseId);
@@ -79,6 +81,7 @@ const QuestionPaperGenerator = () => {
         unitDistribution: unitDist,
         bloomDistribution: bloomDist,
         difficultyDistribution: diffDist,
+        selectedUnitIds: courseUnits.map(u => u.id), // Select all by default
       }));
       
       setCurrentStep(1);
@@ -92,7 +95,8 @@ const QuestionPaperGenerator = () => {
       await form.validateFields(['totalMarks', 'duration']);
       setGenerating(true);
 
-      const result = await generatePaper(config, availableQuestions);
+      const selectedUnitsData = courseUnits.filter(u => config.selectedUnitIds.includes(u.id));
+      const result = await generatePaper({ ...config, units: selectedUnitsData }, availableQuestions);
       setGeneratedPaper(result);
       
       // Save to history automatically
@@ -130,7 +134,23 @@ const QuestionPaperGenerator = () => {
       unitDistribution: {},
       bloomDistribution: {},
       difficultyDistribution: {},
+      selectedUnitIds: [],
     });
+  };
+
+  const handleDownloadPdf = () => {
+    try {
+      const paperToDownload = {
+        ...generatedPaper,
+        courseId: config.courseId,
+        branchId: config.branchId
+      };
+      downloadQuestionPaperPdf(paperToDownload);
+      showSuccess('PDF Downloaded successfully');
+    } catch (error) {
+      console.error(error);
+      showError('Failed to download PDF');
+    }
   };
 
   const questionColumns = [
@@ -347,6 +367,34 @@ const QuestionPaperGenerator = () => {
                 </Col>
               </Row>
 
+              <Divider>Select Units ({config.selectedUnitIds.length} selected)</Divider>
+              
+              <Form.Item
+                name="selectedUnitIds"
+                rules={[{ required: true, message: 'Please select at least one unit' }]}
+                initialValue={config.selectedUnitIds}
+              >
+                <Checkbox.Group 
+                  style={{ width: '100%' }}
+                  onChange={(v) => setConfig(prev => ({ ...prev, selectedUnitIds: v }))}
+                >
+                  <Row gutter={[16, 16]}>
+                    {courseUnits.map(u => (
+                      <Col key={u.id} xs={24} sm={12} lg={8}>
+                        <Card size="small" className={`unit-select-card ${config.selectedUnitIds.includes(u.id) ? 'selected' : ''}`}>
+                          <Checkbox value={u.id}>
+                            <Text strong>Unit {u.unitNumber}:</Text> <Text>{u.title}</Text>
+                            <div style={{ paddingLeft: 24, fontSize: '12px' }}>
+                              <Text type="secondary">{u.topics.slice(0, 3).join(', ')}...</Text>
+                            </div>
+                          </Checkbox>
+                        </Card>
+                      </Col>
+                    ))}
+                  </Row>
+                </Checkbox.Group>
+              </Form.Item>
+
               <Divider>Difficulty Distribution</Divider>
               
               <Row gutter={16}>
@@ -400,7 +448,7 @@ const QuestionPaperGenerator = () => {
                   type="primary" 
                   icon={<DownloadOutlined />} 
                   size="large"
-                  onClick={() => showSuccess('PDF download started')}
+                  onClick={handleDownloadPdf}
                 >
                   Download PDF
                 </Button>,

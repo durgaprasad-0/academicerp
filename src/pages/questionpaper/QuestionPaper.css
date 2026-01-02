@@ -163,6 +163,30 @@
     gap: 8px;
   }
 }
+
+.unit-select-card {
+  border: 1px solid var(--color-border);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  height: 100%;
+}
+
+.unit-select-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.unit-select-card.selected {
+  border-color: var(--color-primary);
+  background-color: var(--color-bg-primary);
+}
+
+.unit-select-card .ant-checkbox-wrapper {
+  width: 100%;
+  display: flex !important;
+  align-items: flex-start;
+  padding: 8px;
+}
 /* AI Generation Animations */
 .ai-scanning-animation {
   position: relative;

@@ -19,7 +19,8 @@ export const generatePaper = async (config, availableQuestions) => {
     throw new Error('Gemini API Key is missing. Please check your .env file.');
   }
 
-  const modelsToTry = ["gemini-2.0-flash", "gemini-2.5-flash", "gemini-flash-latest"];
+  // Prioritize 2.0-flash-exp which is known to exist for this key, then fallback
+  const modelsToTry = ["gemini-2.0-flash-exp", "gemini-1.5-flash", "gemini-pro"];
   let lastError = null;
 
   const { 
@@ -27,24 +28,36 @@ export const generatePaper = async (config, availableQuestions) => {
     examType,
     difficultyDistribution,
     bloomDistribution,
-    courseId
+    courseId,
+    units: selectedUnits // Pass from Generator.jsx
   } = config;
+
+  // Filter and limit questions to avoid hitting token limits
+  const relevantQuestions = availableQuestions
+    ?.filter(q => selectedUnits.map(u => u.id).includes(q.unitId))
+    .map(q => ({
+      id: q.id,
+      text: q.questionText,
+      marks: q.marks,
+      unitId: q.unitId
+    }))
+    .slice(0, 50) || []; // Limit to 50 questions max context
 
   const prompt = `
     You are an expert Academic Question Paper Generator. 
     Generate a professional question paper for Course ID: ${courseId}, Exam Type: ${examType}, Total Marks: ${totalMarks}.
     
-    Constraints:
-    - Difficulty: ${JSON.stringify(difficultyDistribution)}
-    - Bloom Levels: ${JSON.stringify(bloomDistribution)}
+    The paper must cover exactly these ${selectedUnits.length} Units:
+    ${selectedUnits.map(u => `- Unit ${u.unitNumber}: ${u.title} (Topics: ${u.topics.join(', ')})`).join('\n')}
 
-    Source Questions:
-    ${JSON.stringify(availableQuestions.map(q => ({
-      id: q.id,
-      text: q.questionText,
-      marks: q.marks,
-      unitId: q.unitId
-    })))}
+    Rules:
+    1. Distribute marks roughly equally across the selected units: ${selectedUnits.map(u => `Unit ${u.unitNumber}`).join(', ')}.
+    2. Adhere to these constraints:
+       - Difficulty: ${JSON.stringify(difficultyDistribution)}
+       - Bloom Levels: ${JSON.stringify(bloomDistribution)}
+
+    Source Question Bank (Use these if they fit the selected units/topics):
+    ${JSON.stringify(relevantQuestions)}
 
     Return ONLY a JSON object:
     {
@@ -53,8 +66,61 @@ export const generatePaper = async (config, availableQuestions) => {
       ],
       "totalMarks": ${totalMarks}
     }
-    Ensure total marks sum to exactly ${totalMarks}.
+    The "id" should be the original ID from the source if selected, or a new unique numeric ID if you generate a new question to fill gaps.
   `;
+
+  // Fallback Rule-Based Generation (if API fails)
+  const generateMockPaper = () => {
+    console.warn("Falling back to rule-based generation due to API limits/errors.");
+    
+    let paperQuestions = [];
+    let currentMarks = 0;
+    
+    // Shuffle questions to ensure randomness
+    const shuffled = [...(availableQuestions || [])].sort(() => 0.5 - Math.random());
+    
+    // 1. Ensure at least one question from each selected unit
+    selectedUnits.forEach(unit => {
+      const q = shuffled.find(sq => sq.unitId === unit.id && !paperQuestions.includes(sq));
+      if (q) {
+        paperQuestions.push({
+          id: q.id,
+          questionText: q.questionText,
+          marks: q.marks,
+          unitId: q.unitId,
+          bloomLevelId: q.bloomLevelId || 1,
+          difficultyLevelId: q.difficultyLevelId || 2
+        });
+        currentMarks += q.marks;
+      }
+    });
+
+    // 2. Fill remaining marks
+    for (const q of shuffled) {
+      if (currentMarks >= totalMarks) break;
+      if (!paperQuestions.map(pq => pq.id).includes(q.id)) {
+         paperQuestions.push({
+          id: q.id,
+          questionText: q.questionText,
+          marks: q.marks,
+          unitId: q.unitId,
+          bloomLevelId: q.bloomLevelId || 1,
+          difficultyLevelId: q.difficultyLevelId || 2
+        });
+        currentMarks += q.marks;
+      }
+    }
+
+    return {
+      id: Date.now(),
+      questions: paperQuestions,
+      totalMarks: currentMarks,
+      config,
+      generatedAt: new Date().toISOString(),
+      status: 'final',
+      generatedBy: 'Fallback Algorithm' // Indicate this was rule-based
+    };
+  };
 
   for (const modelName of modelsToTry) {
     try {
@@ -63,7 +129,7 @@ export const generatePaper = async (config, availableQuestions) => {
       const model = genAI.getGenerativeModel({ 
         model: modelName,
         generationConfig: { responseMimeType: "application/json" }
-      }); // Default to v1 stable
+      }); 
 
       const result = await model.generateContent(prompt);
       const response = await result.response;
@@ -93,10 +159,13 @@ export const generatePaper = async (config, availableQuestions) => {
     } catch (error) {
       console.error(`Error with ${modelName}:`, error.message);
       lastError = error;
+      // Wait 2 seconds before retrying to respect rate limits
+      await new Promise(resolve => setTimeout(resolve, 2000));
     }
   }
 
-  throw new Error(lastError?.message || 'Failed to generate paper using Gemini AI after multiple attempts.');
+  // If all models fail, return the rule-based fallback
+  return generateMockPaper();
 };
 
 export const savePaper = (paper) => {

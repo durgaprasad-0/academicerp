@@ -122,7 +122,7 @@ const GlobalSearch = ({ open, onClose }) => {
       centered
       width={560}
       className="global-search-modal"
-      maskStyle={{ backdropFilter: 'blur(4px)' }}
+      styles={{ mask: { backdropFilter: 'blur(4px)' } }}
     >
       <div className="search-container">
         <Input
