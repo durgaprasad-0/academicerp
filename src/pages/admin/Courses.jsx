@@ -11,6 +11,7 @@ import FormModal from '@/components/common/FormModal';
 import { courses as mockCourses, createMockCrud } from '@/services/mockData';
 import { COURSE_TYPES, STATUS_OPTIONS } from '@/utils/constants';
 import useAppStore from '@/store/useAppStore';
+import { downloadFile } from '@/utils/downloadHelper';
 import './CrudPage.css';
 
 const coursesService = createMockCrud(mockCourses);
@@ -128,6 +129,49 @@ const Courses = () => {
     }
   };
 
+  const handleDownloadTemplate = () => {
+    downloadFile('/templates/courses_template.csv', 'courses_template.csv');
+    showSuccess('Template download started');
+  };
+
+  const tabItems = [
+    {
+      key: 'list',
+      label: 'Course List',
+      children: (
+        <DataTable
+          tableId="courses"
+          columns={columns}
+          dataSource={data}
+          loading={loading}
+          searchKeys={['name', 'code']}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          emptyText="No Courses Found"
+          emptyDescription="Start by adding your first course."
+        />
+      ),
+    },
+    {
+      key: 'upload',
+      label: 'Bulk Upload',
+      children: (
+        <div style={{ padding: 24 }}>
+          <BulkUpload
+            onUpload={async (formData) => {
+              // Simulate upload
+              return new Promise(resolve => setTimeout(() => resolve({ success: true, message: 'Courses imported' }), 1000));
+            }}
+            onDownloadTemplate={handleDownloadTemplate}
+            templateName="courses_template.csv"
+            title="Upload Courses"
+            description="Upload an Excel or CSV file"
+          />
+        </div>
+      ),
+    },
+  ];
+
   return (
     <div className="crud-page">
       <PageHeader
@@ -140,16 +184,10 @@ const Courses = () => {
       />
 
       <Card className="content-card">
-        <DataTable
-          tableId="courses"
-          columns={columns}
-          dataSource={data}
-          loading={loading}
-          searchKeys={['name', 'code']}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-          emptyText="No Courses Found"
-          emptyDescription="Start by adding your first course."
+        <Tabs 
+          items={tabItems}
+          defaultActiveKey="list"
+          style={{ marginTop: -16 }}
         />
       </Card>
 

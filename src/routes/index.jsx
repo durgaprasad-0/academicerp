@@ -29,6 +29,7 @@ const Faculty = lazy(() => import('@/pages/admin/Faculty'));
 const ProgramBranchMapping = lazy(() => import('@/pages/admin/ProgramBranchMapping'));
 const BranchCourseMapping = lazy(() => import('@/pages/admin/BranchCourseMapping'));
 const FacultyCourseMapping = lazy(() => import('@/pages/admin/FacultyCourseMapping'));
+const TaskAssignment = lazy(() => import('@/pages/admin/TaskAssignment'));
 
 // Faculty pages
 const FacultyDashboard = lazy(() => import('@/pages/faculty/Dashboard'));
@@ -159,6 +160,14 @@ const router = createBrowserRouter([
             element: (
               <AdminRoute>
                 <LazyComponent><FacultyCourseMapping /></LazyComponent>
+              </AdminRoute>
+            ),
+          },
+          {
+            path: 'task-assignment',
+            element: (
+              <AdminRoute>
+                <LazyComponent><TaskAssignment /></LazyComponent>
               </AdminRoute>
             ),
           },

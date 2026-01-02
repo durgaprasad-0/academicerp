@@ -132,3 +132,23 @@
     z-index: 1000 !important;
   }
 }
+
+/* Dark Mode */
+.dark-mode .sidebar {
+  background: var(--color-bg-secondary);
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .sidebar-menu .ant-menu-item-selected {
+  background: rgba(96, 165, 250, 0.15) !important;
+  color: var(--color-secondary) !important;
+}
+
+.dark-mode .sidebar-menu .ant-menu-item:hover,
+.dark-mode .sidebar-menu .ant-menu-submenu-title:hover {
+  background: rgba(96, 165, 250, 0.1) !important;
+}
+
+.dark-mode .logo-text h1 {
+  color: var(--color-secondary);
+}

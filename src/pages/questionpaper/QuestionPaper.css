@@ -1,7 +1,7 @@
 /* Question Paper Page Styles */
 
 .question-paper-page {
-  /* Container */
+  position: relative;
 }
 
 .steps-card {
@@ -162,4 +162,29 @@
     flex-direction: column;
     gap: 8px;
   }
+}
+/* AI Generation Animations */
+.ai-scanning-animation {
+  position: relative;
+  display: inline-block;
+  padding: 20px;
+}
+
+.scanner-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #00B894, transparent);
+  animation: scan 2s linear infinite;
+  z-index: 10;
+  box-shadow: 0 0 10px #00B894;
+}
+
+@keyframes scan {
+  0% { top: 0; opacity: 0; }
+  5% { opacity: 1; }
+  95% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
 }

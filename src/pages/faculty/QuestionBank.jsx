@@ -21,6 +21,7 @@ import {
 } from '@/services/mockData';
 import { QUESTION_TYPES } from '@/utils/constants';
 import useAppStore from '@/store/useAppStore';
+import { downloadFile } from '@/utils/downloadHelper';
 import '@/pages/admin/CrudPage.css';
 
 const { Text } = Typography;
@@ -321,8 +322,11 @@ const QuestionBank = () => {
         <div style={{ padding: 24 }}>
           <BulkUpload
             onUpload={handleBulkUpload}
-            onDownloadTemplate={() => showSuccess('Template download started')}
-            templateName="questions_template.xlsx"
+            onDownloadTemplate={() => {
+              downloadFile('/templates/questions_template.csv', 'questions_template.csv');
+              showSuccess('Template download started');
+            }}
+            templateName="questions_template.csv"
             title="Upload Questions"
             description="Upload an Excel file with questions"
             hint="Required: Question Text, Course, Unit, CO, Bloom Level, Difficulty, Type, Marks"

@@ -22,7 +22,6 @@ import {
 } from '@ant-design/icons';
 import useUserStore from '@/store/useUserStore';
 import useThemeStore from '@/store/useThemeStore';
-import { colors } from '@/theme/themeConfig';
 import './Sidebar.css';
 
 const { Sider } = Layout;
@@ -31,7 +30,7 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { role } = useUserStore();
-  const { sidebarCollapsed, isMobile, closeMobileDrawer } = useThemeStore();
+  const { sidebarCollapsed, isMobile, closeMobileDrawer, isDarkMode } = useThemeStore();
 
   // Admin menu items
   const adminMenuItems = useMemo(() => [
@@ -68,6 +67,11 @@ const Sidebar = () => {
         { key: '/admin/faculty', label: 'All Faculty' },
         { key: '/admin/faculty-course-mapping', label: 'Faculty-Course Mapping' },
       ],
+    },
+    {
+      key: '/admin/task-assignment',
+      icon: <FormOutlined />,
+      label: 'Task Assignment',
     },
   ], []);
 
@@ -144,6 +148,21 @@ const Sidebar = () => {
     }
   };
 
+  // Dynamic colors based on theme
+  const siderStyle = {
+    background: isDarkMode ? '#1E293B' : '#fff',
+    borderRight: `1px solid ${isDarkMode ? '#334155' : '#E5E7EB'}`,
+    height: '100vh',
+    position: 'fixed',
+    left: 0,
+    top: 0,
+    bottom: 0,
+    zIndex: 100,
+    overflow: 'auto',
+  };
+
+  const logoBackground = isDarkMode ? '#4E73DF' : '#1F3C88';
+
   return (
     <Sider
       className="sidebar"
@@ -151,28 +170,19 @@ const Sidebar = () => {
       collapsedWidth={80}
       collapsed={sidebarCollapsed}
       trigger={null}
-      style={{
-        background: '#fff',
-        borderRight: '1px solid #E5E7EB',
-        height: '100vh',
-        position: 'fixed',
-        left: 0,
-        top: 0,
-        bottom: 0,
-        zIndex: 100,
-        overflow: 'auto',
-      }}
+      style={siderStyle}
+      theme={isDarkMode ? 'dark' : 'light'}
     >
       {/* Logo */}
       <div className="sidebar-logo">
-        <div className="logo-icon" style={{ background: colors.primary }}>
+        <div className="logo-icon" style={{ background: logoBackground }}>
           <span style={{ color: '#fff', fontWeight: 700, fontSize: sidebarCollapsed ? 16 : 20 }}>
             {sidebarCollapsed ? 'A' : 'AE'}
           </span>
         </div>
         {!sidebarCollapsed && (
           <div className="logo-text">
-            <h1>Academic ERP</h1>
+            <h1 style={{ color: isDarkMode ? '#60A5FA' : '#1F3C88' }}>Academic ERP</h1>
             <span>{role === 'admin' ? 'Administrator' : 'Faculty Portal'}</span>
           </div>
         )}
@@ -185,6 +195,7 @@ const Sidebar = () => {
         defaultOpenKeys={openKeys}
         items={menuItems}
         onClick={handleMenuClick}
+        theme={isDarkMode ? 'dark' : 'light'}
         style={{ 
           border: 'none',
           background: 'transparent',
@@ -203,3 +214,4 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
+

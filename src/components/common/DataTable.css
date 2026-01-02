@@ -1,7 +1,7 @@
 /* DataTable Styles */
 
 .data-table-container {
-  background: #fff;
+  background: var(--color-bg-secondary);
   border-radius: 12px;
   box-shadow: var(--shadow-sm);
   border: 1px solid var(--color-border-light);
@@ -211,3 +211,37 @@
   background-color: var(--color-primary);
   border-color: var(--color-primary);
 }
+
+/* Dark Mode */
+.dark-mode .data-table-container {
+  background: var(--color-bg-secondary);
+  border-color: var(--color-border);
+}
+
+.dark-mode .data-table .ant-table-thead > tr > th {
+  background: #334155 !important;
+}
+
+.dark-mode .data-table .ant-table-thead > tr > th.ant-table-column-has-sorters:hover {
+  background: #3B4D63 !important;
+}
+
+.dark-mode .data-table .ant-table-tbody > tr > td {
+  background: var(--color-bg-secondary);
+  border-color: var(--color-border);
+}
+
+.dark-mode .data-table .ant-table-tbody > tr:hover > td {
+  background: var(--color-bg-tertiary) !important;
+}
+
+.dark-mode .table-toolbar {
+  background: var(--color-bg-tertiary);
+  border-color: var(--color-border);
+}
+
+.dark-mode .data-table .ant-table-pagination {
+  background: var(--color-bg-tertiary);
+  border-color: var(--color-border);
+}
+

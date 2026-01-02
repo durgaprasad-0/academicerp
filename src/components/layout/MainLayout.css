@@ -65,3 +65,13 @@
     transform: translateY(0);
   }
 }
+
+/* Dark Mode */
+.dark-mode .main-layout,
+.dark-mode .content-layout {
+  background: var(--color-bg-primary);
+}
+
+.dark-mode .mobile-sidebar-drawer .ant-drawer-content {
+  background: var(--color-bg-secondary);
+}

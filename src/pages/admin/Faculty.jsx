@@ -14,6 +14,7 @@ import BulkUpload from '@/components/common/BulkUpload';
 import { faculty as mockFaculty, createMockCrud } from '@/services/mockData';
 import { DESIGNATIONS, STATUS_OPTIONS } from '@/utils/constants';
 import useAppStore from '@/store/useAppStore';
+import { downloadFile } from '@/utils/downloadHelper';
 import './CrudPage.css';
 
 const facultyService = createMockCrud(mockFaculty);
@@ -161,6 +162,7 @@ const Faculty = () => {
   };
 
   const handleDownloadTemplate = () => {
+    downloadFile('/templates/faculty_template.csv', 'faculty_template.csv');
     showSuccess('Template download started');
   };
 

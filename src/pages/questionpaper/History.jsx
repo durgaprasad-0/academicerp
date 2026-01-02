@@ -11,6 +11,8 @@ import {
 } from '@ant-design/icons';
 import PageHeader from '@/components/common/PageHeader';
 import { courses, branches, regulations } from '@/services/mockData';
+import { deletePaper } from '@/services/questionPaperService';
+import useQuestionPaperStore from '@/store/useQuestionPaperStore';
 import { formatDateTime } from '@/utils/helpers';
 import useAppStore from '@/store/useAppStore';
 import '@/pages/admin/CrudPage.css';
@@ -18,56 +20,10 @@ import './QuestionPaper.css';
 
 const { Title, Text, Paragraph } = Typography;
 
-// Mock generated papers history
-const mockPapersHistory = [
-  {
-    id: 1,
-    courseId: 1,
-    branchId: 1,
-    regulationId: 1,
-    examType: 'mid',
-    semester: 5,
-    academicYear: '2024-25',
-    totalMarks: 50,
-    duration: 90,
-    questionCount: 10,
-    status: 'final',
-    generatedAt: '2024-12-15T10:30:00Z',
-    generatedBy: 'Dr. Rajesh Kumar',
-  },
-  {
-    id: 2,
-    courseId: 2,
-    branchId: 1,
-    regulationId: 1,
-    examType: 'end',
-    semester: 5,
-    academicYear: '2024-25',
-    totalMarks: 100,
-    duration: 180,
-    questionCount: 15,
-    status: 'draft',
-    generatedAt: '2024-12-10T14:15:00Z',
-    generatedBy: 'Dr. Rajesh Kumar',
-  },
-  {
-    id: 3,
-    courseId: 3,
-    branchId: 2,
-    regulationId: 1,
-    examType: 'mid',
-    semester: 3,
-    academicYear: '2024-25',
-    totalMarks: 50,
-    duration: 90,
-    questionCount: 10,
-    status: 'final',
-    generatedAt: '2024-12-05T09:00:00Z',
-    generatedBy: 'Dr. Rajesh Kumar',
-  },
-];
+// History state management handled by useQuestionPaperStore
 
 const PaperHistory = () => {
+  const { papers } = useQuestionPaperStore();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [viewModalOpen, setViewModalOpen] = useState(false);
@@ -75,12 +31,11 @@ const PaperHistory = () => {
   const { showSuccess, showError } = useAppStore();
 
   useEffect(() => {
-    // Simulate fetch
-    setTimeout(() => {
-      setData(mockPapersHistory);
-      setLoading(false);
-    }, 500);
-  }, []);
+    setLoading(true);
+    // Papers are loaded from store (persist)
+    setData(papers);
+    setLoading(false);
+  }, [papers]);
 
   const columns = useMemo(() => [
     {
@@ -222,7 +177,7 @@ const PaperHistory = () => {
       okText: 'Delete',
       okButtonProps: { danger: true },
       onOk: () => {
-        setData(prev => prev.filter(p => p.id !== record.id));
+        deletePaper(record.id);
         showSuccess('Paper deleted');
       },
     });

@@ -72,30 +72,30 @@ export const faculty = [
 // COURSE OUTCOMES
 // ============================================
 export const courseOutcomes = [
-  { id: 1, courseId: 1, code: 'CO1', description: 'Apply fundamental data structure concepts', bloomLevel: 3 },
-  { id: 2, courseId: 1, code: 'CO2', description: 'Analyze time and space complexity of algorithms', bloomLevel: 4 },
-  { id: 3, courseId: 1, code: 'CO3', description: 'Implement various data structures using programming', bloomLevel: 3 },
-  { id: 4, courseId: 1, code: 'CO4', description: 'Select appropriate data structures for given problems', bloomLevel: 5 },
-  { id: 5, courseId: 2, code: 'CO1', description: 'Design ER diagrams for database systems', bloomLevel: 6 },
-  { id: 6, courseId: 2, code: 'CO2', description: 'Apply normalization techniques', bloomLevel: 3 },
-  { id: 7, courseId: 2, code: 'CO3', description: 'Write complex SQL queries', bloomLevel: 3 },
-  { id: 8, courseId: 2, code: 'CO4', description: 'Evaluate database transaction processing', bloomLevel: 5 },
+  { id: 1, courseId: 1, coNumber: 1, description: 'Apply fundamental data structure concepts', bloomLevelId: 3 },
+  { id: 2, courseId: 1, coNumber: 2, description: 'Analyze time and space complexity of algorithms', bloomLevelId: 4 },
+  { id: 3, courseId: 1, coNumber: 3, description: 'Implement various data structures using programming', bloomLevelId: 3 },
+  { id: 4, courseId: 1, coNumber: 4, description: 'Select appropriate data structures for given problems', bloomLevelId: 5 },
+  { id: 5, courseId: 2, coNumber: 1, description: 'Design ER diagrams for database systems', bloomLevelId: 6 },
+  { id: 6, courseId: 2, coNumber: 2, description: 'Apply normalization techniques', bloomLevelId: 3 },
+  { id: 7, courseId: 2, coNumber: 3, description: 'Write complex SQL queries', bloomLevelId: 3 },
+  { id: 8, courseId: 2, coNumber: 4, description: 'Evaluate database transaction processing', bloomLevelId: 5 },
 ];
 
 // ============================================
 // UNITS
 // ============================================
 export const units = [
-  { id: 1, courseId: 1, name: 'Introduction to Data Structures', unitNumber: 1, hours: 8, status: 'active' },
-  { id: 2, courseId: 1, name: 'Arrays and Linked Lists', unitNumber: 2, hours: 10, status: 'active' },
-  { id: 3, courseId: 1, name: 'Stacks and Queues', unitNumber: 3, hours: 8, status: 'active' },
-  { id: 4, courseId: 1, name: 'Trees and Graphs', unitNumber: 4, hours: 12, status: 'active' },
-  { id: 5, courseId: 1, name: 'Sorting and Searching', unitNumber: 5, hours: 10, status: 'active' },
-  { id: 6, courseId: 2, name: 'Introduction to DBMS', unitNumber: 1, hours: 8, status: 'active' },
-  { id: 7, courseId: 2, name: 'ER Model and Relational Model', unitNumber: 2, hours: 10, status: 'active' },
-  { id: 8, courseId: 2, name: 'SQL and Query Processing', unitNumber: 3, hours: 12, status: 'active' },
-  { id: 9, courseId: 2, name: 'Normalization', unitNumber: 4, hours: 8, status: 'active' },
-  { id: 10, courseId: 2, name: 'Transaction Management', unitNumber: 5, hours: 10, status: 'active' },
+  { id: 1, courseId: 1, title: 'Introduction to Data Structures', unitNumber: 1, weightage: 20, topics: ['Introduction', 'Abstract Data Types', 'Complexity Analysis'], description: 'Basic concepts of data structures' },
+  { id: 2, courseId: 1, title: 'Arrays and Linked Lists', unitNumber: 2, weightage: 20, topics: ['Arrays', 'Linked Lists', 'Circular Lists', 'Doubly Linked Lists'], description: 'Linear data structures' },
+  { id: 3, courseId: 1, title: 'Stacks and Queues', unitNumber: 3, weightage: 20, topics: ['Stack Operations', 'Queue Operations', 'Applications'], description: 'LIFO and FIFO structures' },
+  { id: 4, courseId: 1, title: 'Trees and Graphs', unitNumber: 4, weightage: 25, topics: ['Binary Trees', 'BST', 'AVL Trees', 'Graphs', 'BFS', 'DFS'], description: 'Non-linear data structures' },
+  { id: 5, courseId: 1, title: 'Sorting and Searching', unitNumber: 5, weightage: 15, topics: ['Bubble Sort', 'Quick Sort', 'Merge Sort', 'Binary Search'], description: 'Algorithms for sorting and searching' },
+  { id: 6, courseId: 2, title: 'Introduction to DBMS', unitNumber: 1, weightage: 15, topics: ['Database Concepts', 'DBMS Architecture', 'Data Models'], description: 'Fundamentals of DBMS' },
+  { id: 7, courseId: 2, title: 'ER Model and Relational Model', unitNumber: 2, weightage: 25, topics: ['ER Diagrams', 'Entities', 'Relationships', 'Relational Algebra'], description: 'Data modeling techniques' },
+  { id: 8, courseId: 2, title: 'SQL and Query Processing', unitNumber: 3, weightage: 25, topics: ['SQL Basics', 'Joins', 'Subqueries', 'Views'], description: 'SQL programming' },
+  { id: 9, courseId: 2, title: 'Normalization', unitNumber: 4, weightage: 20, topics: ['1NF', '2NF', '3NF', 'BCNF'], description: 'Database normalization' },
+  { id: 10, courseId: 2, title: 'Transaction Management', unitNumber: 5, weightage: 15, topics: ['ACID Properties', 'Concurrency Control', 'Recovery'], description: 'Transaction processing' },
 ];
 
 // ============================================
@@ -123,16 +123,16 @@ export const difficultyLevels = [
 // QUESTIONS
 // ============================================
 export const questions = [
-  { id: 1, courseId: 1, unitId: 1, coId: 1, bloomLevel: 1, difficulty: 'easy', marks: 2, type: 'short', question: 'Define data structure and list its types.', answer: 'A data structure is a way of organizing and storing data...', status: 'active', createdAt: '2024-01-15' },
-  { id: 2, courseId: 1, unitId: 1, coId: 2, bloomLevel: 2, difficulty: 'easy', marks: 2, type: 'short', question: 'Explain the difference between linear and non-linear data structures.', answer: 'Linear data structures store elements in a sequential manner...', status: 'active', createdAt: '2024-01-15' },
-  { id: 3, courseId: 1, unitId: 2, coId: 3, bloomLevel: 3, difficulty: 'medium', marks: 5, type: 'long', question: 'Implement a function to reverse a linked list.', answer: 'Algorithm to reverse linked list...', status: 'active', createdAt: '2024-01-16' },
-  { id: 4, courseId: 1, unitId: 2, coId: 3, bloomLevel: 3, difficulty: 'medium', marks: 5, type: 'long', question: 'Write a program to detect a cycle in a linked list.', answer: 'Floyd cycle detection algorithm...', status: 'active', createdAt: '2024-01-16' },
-  { id: 5, courseId: 1, unitId: 3, coId: 4, bloomLevel: 4, difficulty: 'medium', marks: 5, type: 'long', question: 'Analyze the applications of stack in expression evaluation.', answer: 'Stack is used for infix to postfix conversion...', status: 'active', createdAt: '2024-01-17' },
-  { id: 6, courseId: 1, unitId: 4, coId: 4, bloomLevel: 4, difficulty: 'hard', marks: 10, type: 'descriptive', question: 'Explain BFS and DFS traversal techniques with examples.', answer: 'Breadth First Search and Depth First Search...', status: 'active', createdAt: '2024-01-18' },
-  { id: 7, courseId: 1, unitId: 5, coId: 2, bloomLevel: 4, difficulty: 'hard', marks: 10, type: 'descriptive', question: 'Compare and analyze various sorting algorithms based on time complexity.', answer: 'Bubble Sort O(n²), Quick Sort O(n log n)...', status: 'active', createdAt: '2024-01-19' },
-  { id: 8, courseId: 2, unitId: 6, coId: 5, bloomLevel: 2, difficulty: 'easy', marks: 2, type: 'short', question: 'What is DBMS? Explain its advantages.', answer: 'Database Management System is software...', status: 'active', createdAt: '2024-01-20' },
-  { id: 9, courseId: 2, unitId: 7, coId: 5, bloomLevel: 6, difficulty: 'medium', marks: 7, type: 'long', question: 'Design an ER diagram for a library management system.', answer: 'Entities: Book, Member, Loan...', status: 'active', createdAt: '2024-01-21' },
-  { id: 10, courseId: 2, unitId: 8, coId: 7, bloomLevel: 3, difficulty: 'medium', marks: 5, type: 'long', question: 'Write SQL queries to perform join operations.', answer: 'SELECT * FROM orders INNER JOIN customers...', status: 'active', createdAt: '2024-01-22' },
+  { id: 1, courseId: 1, unitId: 1, courseOutcomeId: 1, bloomLevelId: 1, difficultyLevelId: 1, marks: 2, questionType: 'short', questionText: 'Define data structure and list its types.', expectedAnswer: 'A data structure is a way of organizing and storing data...', status: 'active', createdAt: '2024-01-15' },
+  { id: 2, courseId: 1, unitId: 1, courseOutcomeId: 2, bloomLevelId: 2, difficultyLevelId: 1, marks: 2, questionType: 'short', questionText: 'Explain the difference between linear and non-linear data structures.', expectedAnswer: 'Linear data structures store elements in a sequential manner...', status: 'active', createdAt: '2024-01-15' },
+  { id: 3, courseId: 1, unitId: 2, courseOutcomeId: 3, bloomLevelId: 3, difficultyLevelId: 2, marks: 5, questionType: 'long', questionText: 'Implement a function to reverse a linked list.', expectedAnswer: 'Algorithm to reverse linked list...', status: 'active', createdAt: '2024-01-16' },
+  { id: 4, courseId: 1, unitId: 2, courseOutcomeId: 3, bloomLevelId: 3, difficultyLevelId: 2, marks: 5, questionType: 'long', questionText: 'Write a program to detect a cycle in a linked list.', expectedAnswer: 'Floyd cycle detection algorithm...', status: 'active', createdAt: '2024-01-16' },
+  { id: 5, courseId: 1, unitId: 3, courseOutcomeId: 4, bloomLevelId: 4, difficultyLevelId: 2, marks: 5, questionType: 'long', questionText: 'Analyze the applications of stack in expression evaluation.', expectedAnswer: 'Stack is used for infix to postfix conversion...', status: 'active', createdAt: '2024-01-17' },
+  { id: 6, courseId: 1, unitId: 4, courseOutcomeId: 4, bloomLevelId: 4, difficultyLevelId: 3, marks: 10, questionType: 'descriptive', questionText: 'Explain BFS and DFS traversal techniques with examples.', expectedAnswer: 'Breadth First Search and Depth First Search...', status: 'active', createdAt: '2024-01-18' },
+  { id: 7, courseId: 1, unitId: 5, courseOutcomeId: 2, bloomLevelId: 4, difficultyLevelId: 3, marks: 10, questionType: 'descriptive', questionText: 'Compare and analyze various sorting algorithms based on time complexity.', expectedAnswer: 'Bubble Sort O(n²), Quick Sort O(n log n)...', status: 'active', createdAt: '2024-01-19' },
+  { id: 8, courseId: 2, unitId: 6, courseOutcomeId: 5, bloomLevelId: 2, difficultyLevelId: 1, marks: 2, questionType: 'short', questionText: 'What is DBMS? Explain its advantages.', expectedAnswer: 'Database Management System is software...', status: 'active', createdAt: '2024-01-20' },
+  { id: 9, courseId: 2, unitId: 7, courseOutcomeId: 5, bloomLevelId: 6, difficultyLevelId: 2, marks: 7, questionType: 'long', questionText: 'Design an ER diagram for a library management system.', expectedAnswer: 'Entities: Book, Member, Loan...', status: 'active', createdAt: '2024-01-21' },
+  { id: 10, courseId: 2, unitId: 8, courseOutcomeId: 7, bloomLevelId: 3, difficultyLevelId: 2, marks: 5, questionType: 'long', questionText: 'Write SQL queries to perform join operations.', expectedAnswer: 'SELECT * FROM orders INNER JOIN customers...', status: 'active', createdAt: '2024-01-22' },
 ];
 
 // ============================================
@@ -208,11 +208,11 @@ export const createMockCrud = (initialData) => {
   let data = [...initialData];
 
   return {
-    getAll: () => Promise.resolve({ success: true, data }),
+    getAll: () => Promise.resolve({ success: true, data: [...data] }),
     
     getById: (id) => {
       const item = data.find(d => d.id === id);
-      return Promise.resolve({ success: true, data: item });
+      return Promise.resolve({ success: true, data: item ? { ...item } : null });
     },
     
     create: (newItem) => {

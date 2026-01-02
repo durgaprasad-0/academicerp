@@ -12,6 +12,7 @@ import {
   AppstoreOutlined,
   ArrowRightOutlined,
   PlusOutlined,
+  FormOutlined,
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import PageHeader from '@/components/common/PageHeader';
@@ -64,6 +65,7 @@ const AdminDashboard = () => {
     { icon: <BranchesOutlined />, label: 'Add Branch', path: '/admin/branches' },
     { icon: <AppstoreOutlined />, label: 'Add Course', path: '/admin/courses' },
     { icon: <TeamOutlined />, label: 'Add Faculty', path: '/admin/faculty' },
+    { icon: <FormOutlined />, label: 'Assign Task', path: '/admin/task-assignment' },
   ];
 
   if (loading) {

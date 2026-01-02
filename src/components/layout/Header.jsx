@@ -1,22 +1,22 @@
 /**
  * Header Component
- * Top navigation bar with user menu and actions
+ * Top navigation bar with search, notifications, and user menu
  */
 
+import { useState, useEffect } from 'react';
 import { 
   Layout, 
   Button, 
   Dropdown, 
   Avatar, 
-  Badge, 
   Space, 
   Input,
   Tooltip,
+  Tag,
 } from 'antd';
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  BellOutlined,
   UserOutlined,
   SettingOutlined,
   LogoutOutlined,
@@ -28,6 +28,8 @@ import { useNavigate } from 'react-router-dom';
 import useUserStore from '@/store/useUserStore';
 import useThemeStore from '@/store/useThemeStore';
 import useAuth from '@/hooks/useAuth';
+import GlobalSearch from '@/components/common/GlobalSearch';
+import NotificationsDropdown from '@/components/common/NotificationsDropdown';
 import { getInitials } from '@/utils/helpers';
 import { colors } from '@/theme/themeConfig';
 import './Header.css';
@@ -39,6 +41,20 @@ const Header = () => {
   const { user } = useUserStore();
   const { sidebarCollapsed, toggleSidebar, isDarkMode, toggleDarkMode, isMobile, openMobileDrawer } = useThemeStore();
   const { logout } = useAuth();
+  const [searchOpen, setSearchOpen] = useState(false);
+
+  // Keyboard shortcut for search (Ctrl/Cmd + K)
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        setSearchOpen(true);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const userMenuItems = [
     {
@@ -74,94 +90,89 @@ const Header = () => {
   };
 
   return (
-    <AntHeader className="app-header">
-      <div className="header-left">
-        <Button
-          type="text"
-          icon={sidebarCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-          onClick={handleToggleSidebar}
-          className="sidebar-toggle"
-          aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-        />
-        
-        {!isMobile && (
-          <Input
-            placeholder="Search..."
-            prefix={<SearchOutlined style={{ color: colors.text?.tertiary }} />}
-            className="header-search"
-            style={{ width: 260 }}
-            allowClear
+    <>
+      <AntHeader className="app-header">
+        <div className="header-left">
+          <Button
+            type="text"
+            icon={sidebarCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            onClick={handleToggleSidebar}
+            className="sidebar-toggle"
+            aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           />
-        )}
-      </div>
+          
+          {!isMobile && (
+            <div className="search-trigger" onClick={() => setSearchOpen(true)}>
+              <SearchOutlined style={{ color: colors.text?.tertiary }} />
+              <span className="search-placeholder">Search...</span>
+              <Tag className="search-shortcut">⌘K</Tag>
+            </div>
+          )}
+        </div>
 
-      <div className="header-right">
-        <Space size="middle">
-          {/* Mobile Search */}
-          {isMobile && (
-            <Tooltip title="Search">
-              <Button 
-                type="text" 
-                icon={<SearchOutlined />} 
+        <div className="header-right">
+          <Space size="middle">
+            {/* Mobile Search */}
+            {isMobile && (
+              <Tooltip title="Search">
+                <Button 
+                  type="text" 
+                  icon={<SearchOutlined />} 
+                  className="header-icon-btn"
+                  aria-label="Search"
+                  onClick={() => setSearchOpen(true)}
+                />
+              </Tooltip>
+            )}
+
+            {/* Theme Toggle */}
+            <Tooltip title={isDarkMode ? 'Light Mode' : 'Dark Mode'}>
+              <Button
+                type="text"
+                icon={isDarkMode ? <SunOutlined /> : <MoonOutlined />}
+                onClick={toggleDarkMode}
                 className="header-icon-btn"
-                aria-label="Search"
+                aria-label="Toggle theme"
               />
             </Tooltip>
-          )}
 
-          {/* Theme Toggle */}
-          <Tooltip title={isDarkMode ? 'Light Mode' : 'Dark Mode'}>
-            <Button
-              type="text"
-              icon={isDarkMode ? <SunOutlined /> : <MoonOutlined />}
-              onClick={toggleDarkMode}
-              className="header-icon-btn"
-              aria-label="Toggle theme"
-            />
-          </Tooltip>
+            {/* Notifications */}
+            <NotificationsDropdown />
 
-          {/* Notifications */}
-          <Tooltip title="Notifications">
-            <Badge count={3} size="small" offset={[-3, 3]}>
-              <Button 
-                type="text" 
-                icon={<BellOutlined />} 
-                className="header-icon-btn"
-                aria-label="Notifications"
-              />
-            </Badge>
-          </Tooltip>
+            {/* User Menu */}
+            <Dropdown
+              menu={{ items: userMenuItems }}
+              placement="bottomRight"
+              trigger={['click']}
+              arrow
+            >
+              <div className="user-menu" role="button" tabIndex={0} aria-label="User menu">
+                <Avatar
+                  size={36}
+                  style={{ 
+                    backgroundColor: colors.primary,
+                    cursor: 'pointer',
+                    fontWeight: 600,
+                  }}
+                  src={user?.avatar}
+                >
+                  {user ? getInitials(user.name) : 'U'}
+                </Avatar>
+                {!isMobile && (
+                  <div className="user-info">
+                    <span className="user-name">{user?.name || 'User'}</span>
+                    <span className="user-role">{user?.designation || user?.role}</span>
+                  </div>
+                )}
+              </div>
+            </Dropdown>
+          </Space>
+        </div>
+      </AntHeader>
 
-          {/* User Menu */}
-          <Dropdown
-            menu={{ items: userMenuItems }}
-            placement="bottomRight"
-            trigger={['click']}
-            arrow
-          >
-            <div className="user-menu" role="button" tabIndex={0} aria-label="User menu">
-              <Avatar
-                size={36}
-                style={{ 
-                  backgroundColor: colors.primary,
-                  cursor: 'pointer',
-                  fontWeight: 600,
-                }}
-                src={user?.avatar}
-              >
-                {user ? getInitials(user.name) : 'U'}
-              </Avatar>
-              {!isMobile && (
-                <div className="user-info">
-                  <span className="user-name">{user?.name || 'User'}</span>
-                  <span className="user-role">{user?.designation || user?.role}</span>
-                </div>
-              )}
-            </div>
-          </Dropdown>
-        </Space>
-      </div>
-    </AntHeader>
+      {/* Global Search Modal */}
+      <GlobalSearch open={searchOpen} onClose={() => setSearchOpen(false)} />
+    </>
   );
 };
 
